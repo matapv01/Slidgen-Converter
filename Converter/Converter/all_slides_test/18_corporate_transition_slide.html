@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Transition Slide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 16px; }
+        body, html {
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            background-color: #FFFFFF;
+        }
+
+        .slide-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            position: relative;
+        }
+
+        .text-column {
+            flex: 1.2;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .color-column {
+            flex: 1;
+            position: relative;
+            background-color: #FBBF24;
+            clip-path: url(#angled-divider);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        /* Shadow/Accent Panel */
+        .color-column::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #EAB308;
+            clip-path: url(#angled-divider);
+            transform: translateX(-2.5rem);
+            z-index: -1;
+        }
+
+
+        .main-headline {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 800;
+            color: #6B7280;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+        
+        .subtitle {
+            color: #FFFFFF;
+            font-weight: 400;
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 15ch;
+            text-align: center;
+        }
+        
+        @media (max-width: 48rem) {
+            .text-column {
+                position: absolute;
+                z-index: 10;
+                background: transparent;
+                width: 100%; height: 100%;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 2rem;
+            }
+            .color-column, .color-column::before {
+                flex: none;
+                width: 100%; height: 100%;
+                clip-path: none;
+            }
+            .subtitle { display: none; }
+        }
+
+    </style>
+</head>
+<body>
+    
+    <svg width="0" height="0">
+      <defs>
+        <clipPath id="angled-divider" clipPathUnits="objectBoundingBox">
+          <polygon points="0.25 0, 1 0, 1 1, 0 1" />
+        </clipPath>
+      </defs>
+    </svg>
+    
+    <div class="slide-container">
+        <div class="text-column">
+            <h1 class="main-headline">TRANSITION<br>HEADLINE</h1>
+        </div>
+        <div class="color-column">
+            <p class="subtitle">Let's start with the first set of slides</p>
+        </div>
+    </div>
+</body>
+</html>

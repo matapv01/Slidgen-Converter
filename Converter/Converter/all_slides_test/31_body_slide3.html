@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three Column Slide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html { 
+            font-size: 16px; 
+            width: 100vw; 
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #d8f3b4; /* Full viewport accent background */
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5rem 7.5rem; /* 80px 120px */
+        }
+
+        .slide-inner-container {
+            width: 100%;
+            height: 100%;
+            max-width: 105rem; /* 1680px */
+            max-height: 57.5rem; /* 920px */
+            background-color: #ffffff;
+            border-radius: 1rem; /* 16px */
+            box-shadow: 0 1.25rem 2.5rem rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            padding: 3rem 4rem; /* 48px 64px */
+            position: relative;
+        }
+        
+        .title-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem; /* 48px */
+        }
+        
+        .title-accent {
+            width: 2.5rem; /* 40px - increased size */
+            height: 2.5rem; /* 40px */
+            background: linear-gradient(135deg, #e6f2dd, rgba(230, 242, 221, 0.8));
+            margin-right: 1.25rem; /* 20px */
+            border-radius: 0.5rem; /* 8px */
+            box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+        }
+        
+        .main-title {
+            font-size: 2.75rem;
+            color: #333333;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .content-layout {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            flex: 1;
+            gap: 2rem; /* 32px */
+        }
+        
+        .content-box {
+            flex: 1;
+            background: linear-gradient(135deg, #e6f2dd, rgba(230, 242, 221, 0.9));
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4.5rem 1.5rem 2rem; /* 72px 24px 32px */
+            border-radius: 1rem; /* 16px */
+            box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 0.125rem solid transparent; /* 2px */
+            overflow: hidden;
+        }
+        
+        .content-box:hover {
+            transform: translateY(-0.75rem); /* -12px hover lift */
+            box-shadow: 0 1.25rem 2.5rem rgba(0,0,0,0.15);
+            border-color: #d8f3b4;
+        }
+        
+        .content-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0.25rem; /* 4px */
+            background: linear-gradient(90deg, #d8f3b4, rgba(140, 198, 63, 0.6));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            transform-origin: left;
+        }
+        
+        .content-box:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .icon-circle {
+            width: 5rem; /* 80px - increased size */
+            height: 5rem; /* 80px */
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            position: absolute;
+            top: -2.5rem; /* -40px */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            border: 0.1875rem solid #d8f3b4; /* 3px */
+        }
+        
+        .content-box:hover .icon-circle {
+            transform: scale(1.1) rotate(5deg); /* hover effect */
+            box-shadow: 0 1rem 2rem rgba(0,0,0,0.2);
+        }
+        
+        .icon-circle svg {
+            stroke: #d8f3b4;
+            width: 2rem; /* 32px - increased size */
+            height: 2rem; /* 32px */
+            transition: all 0.3s ease;
+        }
+        
+        .content-box:hover .icon-circle svg {
+            stroke: #e6f2dd;
+            transform: scale(1.1);
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: #333333;
+            margin: 0 0 1rem 0; /* 16px */
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: -0.375rem; /* -6px */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2.5rem; /* 40px */
+            height: 0.125rem; /* 2px */
+            background: #d8f3b4;
+            border-radius: 0.0625rem; /* 1px */
+            transition: width 0.3s ease;
+        }
+        
+        .content-box:hover .subtitle::after {
+            width: 5rem; /* 80px - expand underline on hover */
+        }
+        
+        .content {
+            font-size: 1.25rem;
+            color: #555555;
+            margin: 0;
+            line-height: 1.6;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem; /* 20px */
+            background: rgba(255,255,255,0.7);
+            border-radius: 0.75rem; /* 12px */
+            transition: all 0.3s ease;
+        }
+        
+        .content-box:hover .content {
+            background: rgba(255,255,255,0.9);
+            transform: translateY(-0.125rem); /* -2px */
+            box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+        }
+        
+        /* Responsive design */
+        @media screen and (max-width: 75rem) {
+            body {
+                padding: 3rem 5rem;
+            }
+            
+            .content-layout {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .content-box {
+                padding: 3rem 2rem 2rem;
+            }
+            
+            .icon-circle {
+                top: -1.5rem;
+                width: 4rem;
+                height: 4rem;
+            }
+            
+            .icon-circle svg {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+        }
+        
+        @media screen and (max-width: 50rem) {
+            body {
+                padding: 2rem 3rem;
+            }
+            
+            .slide-inner-container {
+                padding: 2rem 3rem;
+            }
+            
+            .content-box {
+                padding: 2.5rem 1.5rem 1.5rem;
+            }
+            
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.25rem;
+            }
+            
+            .content {
+                font-size: 1rem;
+            }
+            
+            .icon-circle {
+                top: -1rem;
+                width: 3rem;
+                height: 3rem;
+            }
+            
+            .icon-circle svg {
+                width: 1.25rem;
+                height: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-inner-container">
+        <!-- Title Section -->
+        <div class="title-section">
+            <div class="title-accent"></div>
+            <h1 class="main-title">MainTitle</h1>
+        </div>
+        
+        <!-- Content Layout -->
+        <div class="content-layout">
+            <!-- Content Box 1 -->
+            <div class="content-box">
+                <div class="icon-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M18 9l-5 5-2-2-4 4"></path></svg>
+                </div>
+                <h3 class="subtitle">SUBTITLE1</h3>
+                <p class="content">Content1</p>
+            </div>
+            
+            <!-- Content Box 2 -->
+            <div class="content-box">
+                <div class="icon-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"></path></svg>
+                </div>
+                <h3 class="subtitle">SUBTITLE2</h3>
+                <p class="content">Content2</p>
+            </div>
+            
+            <!-- Content Box 3 -->
+            <div class="content-box">
+                <div class="icon-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                </div>
+                <h3 class="subtitle">SUBTITLE3</h3>
+                <p class="content">Content3</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

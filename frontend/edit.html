@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlideGenius Pro with Distance Guides</title>
+    <script src="./config.js?v=2"></script> <!-- Load config -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <!-- PDFKit for high-quality vector PDF generation -->
+    <script src="https://cdn.jsdelivr.net/npm/pdfkit@0.13.0/js/pdfkit.standalone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/blob-stream@0.1.3/blob-stream.js"></script>
+
+    <!-- Editor Styles - Modular CSS -->
+    <!-- Base -->
+    <link rel="stylesheet" href="css/base/variables.css">
+
+    <!-- Layout -->
+    <link rel="stylesheet" href="css/layout/toolbar/base.css">
+    <link rel="stylesheet" href="css/layout/toolbar/buttons.css">
+    <link rel="stylesheet" href="css/layout/toolbar/logo.css">
+    <link rel="stylesheet" href="css/layout/canvas/base.css">
+    <link rel="stylesheet" href="css/layout/canvas/grid.css">
+    <link rel="stylesheet" href="css/layout/properties.css">
+    <link rel="stylesheet" href="css/layout/slides.css">
+
+    <!-- Features -->
+    <link rel="stylesheet" href="css/features/presentation/base.css?v=2">
+    <link rel="stylesheet" href="css/features/presentation/controls.css?v=2">
+    <link rel="stylesheet" href="css/features/presentation/timeline.css?v=2">
+    <link rel="stylesheet" href="css/features/connector/base.css">
+    <link rel="stylesheet" href="css/features/connector/arrows.css">
+    <link rel="stylesheet" href="css/features/connector/styles.css">
+    <link rel="stylesheet" href="css/features/connector/controls.css">
+    <link rel="stylesheet" href="css/features/guides.css">
+
+    <!-- Components -->
+    <link rel="stylesheet" href="css/components/elements/base.css">
+    <link rel="stylesheet" href="css/components/elements/selection.css">
+    <link rel="stylesheet" href="css/components/elements/resize.css">
+    <link rel="stylesheet" href="css/components/elements/editing.css">
+    <link rel="stylesheet" href="css/components/controls.css">
+    <style>
+        #saveIndicator {
+            display: inline-flex !important;
+            align-items: center;
+            vertical-align: middle !important;
+            margin-left: 12px;
+            font-size: 14px;
+            color: #10b981;
+            padding: 0 !important;
+        }
+
+        #saveIndicator svg,
+        #saveIndicator i,
+        #saveIndicator .icon {
+            vertical-align: middle !important;
+            margin-right: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Presentation Mode -->
+    <div class="presentation-mode" id="presentationMode">
+        <div class="presentation-click-zone left" id="presentationZoneLeft"></div>
+        <div class="presentation-click-zone right" id="presentationZoneRight"></div>
+        <div class="presentation-slide-container" id="presentationSlideContainer"></div>
+        <div class="presentation-controls">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <button id="prevSlideBtn" title="Previous Slide (←)">◀</button>
+                <span class="presentation-counter" id="presentationCounter">1 / 1</span>
+                <button id="nextSlideBtn" title="Next Slide (→)">▶</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button id="exitPresentation" title="Exit Presentation (ESC)">✕</button>
+            </div>
+        </div>
+        <div class="presentation-timeline" id="presentationTimeline">
+            <div class="timeline-track" id="timelineTrack">
+                <div class="timeline-progress" id="timelineProgress"></div>
+                <div class="timeline-slides" id="timelineSlides"></div>
+                <div class="timeline-current-indicator" id="timelineIndicator"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <button class="back-btn" onclick="window.location.href='projects.html'" title="Quay lại danh sách dự án">
+                ←
+            </button>
+            <div class="project-name-display" id="projectNameDisplay" title="Click đúp để sửa tên dự án">
+                <span id="projectNameText">Dự án Chưa đặt tên</span>
+                <i class="edit-icon">✏️</i>
+            </div>
+            <div class="btn-group-separator"></div>
+            <div class="btn-group">
+                <button id="toggleSlidesBtn" title="Thu gọn/Mở rộng Slides">
+                    <span class="toggle-icon">☰</span>
+                    <span class="toggle-text">Slides</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="toolbar-center">
+            <div class="btn-group">
+                <button id="selectBtn" class="active" style="display: none;">🎯 Chọn</button>
+                <button id="textBtn">📝 Văn bản</button>
+            </div>
+
+            <div class="btn-group-separator"></div>
+
+            <div class="btn-group">
+                <button id="exportAllPdfBtn" class="capture-btn" title="Xuất tất cả slides thành PDF">📄 Xuất</button>
+            </div>
+
+            <div class="btn-group-separator"></div>
+
+            <div class="btn-group">
+                <div class="present-btn-wrapper">
+                    <button id="presentBtn" title="Bắt đầu trình chiếu">▶️ Trình chiếu</button>
+                    <div class="present-dropdown" id="presentDropdown">
+                        <div class="present-dropdown-item" data-action="from-start">
+                            <span class="icon">⏮</span>
+                            <span class="label">Từ Đầu</span>
+                        </div>
+                        <div class="present-dropdown-item" data-action="from-current">
+                            <span class="icon">▶️</span>
+                            <span class="label">Từ Slide Hiện Tại</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="toolbar-right">
+            <div class="btn-group">
+                <button id="undoBtn" title="Hoàn tác (Ctrl+Z)">↶ Hoàn tác</button>
+                <button id="redoBtn" title="Làm lại (Ctrl+Y)">↷ Làm lại</button>
+                <span id="saveIndicator" style="color: #10b981; font-size: 14px; margin-left: 12px; display: none;"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#10b981" viewBox="0 0 16 16"
+                        style="vertical-align: middle; margin-right: 4px;">
+                        <path
+                            d="M13.485 1.929a1 1 0 0 1 0 1.414l-7.071 7.071a1 1 0 0 1-1.414 0L2.515 8.929a1 1 0 1 1 1.414-1.414l1.071 1.071 6.364-6.364a1 1 0 0 1 1.414 0z" />
+                    </svg>Đã lưu</span>
+            </div>
+            <div class="btn-group-separator"></div>
+
+            <div class="btn-group">
+                <button id="propertiesBtn">⚙️ Thuộc tính</button>
+            </div>
+            <div class="btn-group-separator"></div>
+
+            <div class="btn-group">
+                <button id="resetViewBtn">🔄 Đặt lại View</button>
+            </div>
+            <div class="btn-group-separator"></div>
+
+            <div class="btn-group">
+                <button id="importBtn">📂 Nhập</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="importFile" accept=".html,text/html" style="display: none;" multiple>
+    <input type="file" id="imageFile" accept="image/*" style="display: none;">
+    <input type="file" id="videoFile" accept="video/*" style="display: none;">
+
+    <div class="left-panels">
+        <div class="left-panel-tabs">
+            <div class="left-panel-tab active" data-tab="slides" data-target="slides-panel-content">
+                <span class="tab-icon">📊</span>
+                <span class="tab-text">Slides</span>
+            </div>
+            <div class="left-panel-tab" data-tab="templates" data-target="templates-panel-content">
+                <span class="tab-icon">🎨</span>
+                <span class="tab-text">Mẫu</span>
+            </div>
+            <div class="left-panel-tab" data-tab="elements" data-target="elements-panel-content">
+                <span class="tab-icon">✨</span>
+                <span class="tab-text">Thành phần</span>
+            </div>
+        </div>
+
+        <div id="slides-panel-content" class="left-panel-content active">
+            <div class="panel-header">
+                <h3>Slides</h3>
+                <div class="slide-controls">
+                    <button id="newSlideBtn">+ Mới</button>
+                    <button id="duplicateSlideBtn">Nhân bản</button>
+                </div>
+            </div>
+            <div class="slides-list" id="slidesList"></div>
+        </div>
+
+        <div id="templates-panel-content" class="left-panel-content">
+            <div class="panel-header">
+                <h3>Mẫu Slide</h3>
+                <p style="font-size: 12px; color: #718096; margin-top: 5px;">Kéo mẫu vào canvas để tạo slide mới</p>
+            </div>
+            <div class="templates-content">
+                <div class="template-category">
+                    <div class="category-title">Bố cục Cơ bản</div>
+                    <div class="template-grid">
+                        <div class="template-item" draggable="true" data-template="title-slide">
+                            <div class="template-preview"
+                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <div class="template-title">Tiêu đề Slide</div>
+                                <div class="template-subtitle">Phụ đề ở đây</div>
+                            </div>
+                            <div class="template-label">Tiêu đề Slide</div>
+                        </div>
+
+                        <div class="template-item" draggable="true" data-template="content-slide">
+                            <div class="template-preview" style="background: #ffffff; color: #333;">
+                                <div class="template-header">Nội dung</div>
+                                <div class="template-bullets">
+                                    <div>• Điểm 1</div>
+                                    <div>• Điểm 2</div>
+                                    <div>• Điểm 3</div>
+                                </div>
+                            </div>
+                            <div class="template-label">Nội dung</div>
+                        </div>
+
+                        <div class="template-item" draggable="true" data-template="two-column">
+                            <div class="template-preview" style="background: #f7fafc;">
+                                <div class="template-columns">
+                                    <div class="template-col">Trái</div>
+                                    <div class="template-col">Phải</div>
+                                </div>
+                            </div>
+                            <div class="template-label">Hai Cột</div>
+                        </div>
+
+                        <div class="template-item" draggable="true" data-template="image-content">
+                            <div class="template-preview" style="background: #edf2f7;">
+                                <div class="template-image-placeholder">🖼️</div>
+                                <div class="template-content-text">Nội dung</div>
+                            </div>
+                            <div class="template-label">Ảnh + Văn bản</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="template-category">
+                    <div class="category-title">Bố cục Đặc biệt</div>
+                    <div class="template-grid">
+                        <div class="template-item" draggable="true" data-template="quote-slide">
+                            <div class="template-preview" style="background: linear-gradient(45deg, #667eea, #764ba2);">
+                                <div class="template-quote">"Trích dẫn"</div>
+                                <div class="template-author">- Tác giả</div>
+                            </div>
+                            <div class="template-label">Trích dẫn</div>
+                        </div>
+
+                        <div class="template-item" draggable="true" data-template="thank-you">
+                            <div class="template-preview"
+                                style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);">
+                                <div class="template-center">Cảm Ơn</div>
+                            </div>
+                            <div class="template-label">Cảm Ơn</div>
+                        </div>
+
+                        <div class="template-item" draggable="true" data-template="blank-slide">
+                            <div class="template-preview" style="background: #ffffff; border: 2px dashed #cbd5e0;">
+                                <div class="template-center" style="color: #a0aec0;">Trống</div>
+                            </div>
+                            <div class="template-label">Slide Trống</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="elements-panel-content" class="left-panel-content">
+            <div class="panel-header">
+                <h3>Thành phần Thiết kế</h3>
+                <p style="font-size: 12px; color: #718096; margin-top: 5px;">Click để thêm thành phần vào slide</p>
+            </div>
+            <div class="elements-content">
+                <!-- Media Elements - Moved to top for easy access -->
+                <div class="element-category">
+                    <div class="category-title">📱 Import từ máy</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="image" title="Click để chọn ảnh từ máy tính">
+                            <div class="element-icon">
+                                <div class="media-placeholder"
+                                    style="width: 24px; height: 18px; background: linear-gradient(45deg, #48bb78, #38a169); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: white;">
+                                    📁</div>
+                            </div>
+                            <div class="element-label">Thêm Ảnh</div>
+                        </div>
+                        <div class="element-item" data-element="video" title="Click để chọn video từ máy tính">
+                            <div class="element-icon">
+                                <div class="media-placeholder"
+                                    style="width: 24px; height: 18px; background: linear-gradient(45deg, #4299e1, #3182ce); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: white;">
+                                    🎬</div>
+                            </div>
+                            <div class="element-label">Thêm Video</div>
+                        </div>
+                        <div class="element-item" data-element="avatar">
+                            <div class="element-icon" style="font-size: 20px;">👤</div>
+                            <div class="element-label">Avatar</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Basic Shapes -->
+                <div class="element-category">
+                    <div class="category-title">🔷 Hình Cơ bản</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="rectangle">
+                            <div class="element-icon">
+                                <div class="shape-rectangle"
+                                    style="width: 24px; height: 16px; background: linear-gradient(45deg, #667eea, #764ba2); border-radius: 4px;">
+                                </div>
+                            </div>
+                            <div class="element-label">Hình chữ nhật</div>
+                        </div>
+                        <div class="element-item" data-element="circle">
+                            <div class="element-icon">
+                                <div class="shape-circle"
+                                    style="width: 24px; height: 24px; background: linear-gradient(45deg, #48bb78, #38a169); border-radius: 50%;">
+                                </div>
+                            </div>
+                            <div class="element-label">Hình tròn</div>
+                        </div>
+                        <div class="element-item" data-element="triangle">
+                            <div class="element-icon">
+                                <div class="shape-triangle"
+                                    style="width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 20px solid #f56565;">
+                                </div>
+                            </div>
+                            <div class="element-label">Hình tam giác</div>
+                        </div>
+                        <div class="element-item" data-element="line">
+                            <div class="element-icon">
+                                <div class="shape-line"
+                                    style="width: 30px; height: 3px; background: linear-gradient(90deg, #ed8936, #f6ad55); border-radius: 2px;">
+                                </div>
+                            </div>
+                            <div class="element-label">Đường kẻ</div>
+                        </div>
+                        <div class="element-item" data-element="square">
+                            <div class="element-icon">
+                                <div class="shape-square"
+                                    style="width: 20px; height: 20px; background: linear-gradient(45deg, #9f7aea, #805ad5); border-radius: 2px;">
+                                </div>
+                            </div>
+                            <div class="element-label">Hình vuông</div>
+                        </div>
+                        <div class="element-item" data-element="oval">
+                            <div class="element-icon">
+                                <div class="shape-oval"
+                                    style="width: 30px; height: 18px; background: linear-gradient(45deg, #38b2ac, #319795); border-radius: 50%;">
+                                </div>
+                            </div>
+                            <div class="element-label">Hình bầu dục</div>
+                        </div>
+                        <div class="element-item" data-element="diamond">
+                            <div class="element-icon">
+                                <div class="shape-diamond"
+                                    style="width: 20px; height: 20px; background: #e53e3e; transform: rotate(45deg);">
+                                </div>
+                            </div>
+                            <div class="element-label">Hình thoi</div>
+                        </div>
+                        <div class="element-item" data-element="hexagon">
+                            <div class="element-icon" style="font-size: 18px; color: #667eea;">⬡</div>
+                            <div class="element-label">Lục giác</div>
+                        </div>
+                        <div class="element-item" data-element="pentagon">
+                            <div class="element-icon" style="font-size: 18px; color: #48bb78;">⬟</div>
+                            <div class="element-label">Ngũ giác</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrows & Directions -->
+                <div class="element-category">
+                    <div class="category-title">➡️ Mũi tên & Chỉ dẫn</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="arrow-right">
+                            <div class="element-icon" style="font-size: 20px; color: #4299e1;">→</div>
+                            <div class="element-label">Phải</div>
+                        </div>
+                        <div class="element-item" data-element="arrow-left">
+                            <div class="element-icon" style="font-size: 20px; color: #4299e1;">←</div>
+                            <div class="element-label">Trái</div>
+                        </div>
+                        <div class="element-item" data-element="arrow-up">
+                            <div class="element-icon" style="font-size: 20px; color: #4299e1;">↑</div>
+                            <div class="element-label">Lên</div>
+                        </div>
+                        <div class="element-item" data-element="arrow-down">
+                            <div class="element-icon" style="font-size: 20px; color: #4299e1;">↓</div>
+                            <div class="element-label">Xuống</div>
+                        </div>
+                        <div class="element-item" data-element="arrow-curved">
+                            <div class="element-icon" style="font-size: 20px; color: #667eea;">↪</div>
+                            <div class="element-label">Cong</div>
+                        </div>
+                        <div class="element-item" data-element="arrow-double">
+                            <div class="element-icon" style="font-size: 20px; color: #ed8936;">⇄</div>
+                            <div class="element-label">Đôi</div>
+                        </div>
+                        <div class="element-item" data-element="arrow-thick">
+                            <div class="element-icon" style="font-size: 20px; color: #48bb78;">➤</div>
+                            <div class="element-label">Dày</div>
+                        </div>
+                        <div class="element-item" data-element="arrow-circle">
+                            <div class="element-icon" style="font-size: 20px; color: #9f7aea;">⟲</div>
+                            <div class="element-label">Vòng tròn</div>
+                        </div>
+                        <div class="element-item" data-element="arrow-diagonal">
+                            <div class="element-icon" style="font-size: 20px; color: #f56565;">↗</div>
+                            <div class="element-label">Chéo</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Symbols & Icons -->
+                <div class="element-category">
+                    <div class="category-title">🎨 Symbols & Icons</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="star">
+                            <div class="element-icon" style="font-size: 20px; color: #ffd700;">⭐</div>
+                            <div class="element-label">Ngôi sao</div>
+                        </div>
+                        <div class="element-item" data-element="star-outline">
+                            <div class="element-icon" style="font-size: 20px; color: #ffd700;">☆</div>
+                            <div class="element-label">Viền sao</div>
+                        </div>
+                        <div class="element-item" data-element="heart">
+                            <div class="element-icon" style="font-size: 20px; color: #e53e3e;">❤️</div>
+                            <div class="element-label">Trái tim</div>
+                        </div>
+                        <div class="element-item" data-element="heart-outline">
+                            <div class="element-icon" style="font-size: 20px; color: #e53e3e;">♡</div>
+                            <div class="element-label">Viền tim</div>
+                        </div>
+                        <div class="element-item" data-element="check">
+                            <div class="element-icon" style="font-size: 20px; color: #48bb78;">✓</div>
+                            <div class="element-label">Tích V</div>
+                        </div>
+                        <div class="element-item" data-element="cross">
+                            <div class="element-icon" style="font-size: 20px; color: #f56565;">✗</div>
+                            <div class="element-label">Dấu X</div>
+                        </div>
+                        <div class="element-item" data-element="plus">
+                            <div class="element-icon" style="font-size: 20px; color: #48bb78;">➕</div>
+                            <div class="element-label">Cộng</div>
+                        </div>
+                        <div class="element-item" data-element="minus">
+                            <div class="element-icon" style="font-size: 20px; color: #f56565;">➖</div>
+                            <div class="element-label">Trừ</div>
+                        </div>
+                        <div class="element-item" data-element="exclamation">
+                            <div class="element-icon" style="font-size: 20px; color: #ed8936;">❗</div>
+                            <div class="element-label">Cảnh báo</div>
+                        </div>
+                        <div class="element-item" data-element="question">
+                            <div class="element-icon" style="font-size: 20px; color: #4299e1;">❓</div>
+                            <div class="element-label">Hỏi chấm</div>
+                        </div>
+                        <div class="element-item" data-element="info">
+                            <div class="element-icon" style="font-size: 20px; color: #3182ce;">ℹ️</div>
+                            <div class="element-label">Thông tin</div>
+                        </div>
+                        <div class="element-item" data-element="thumbs-up">
+                            <div class="element-icon" style="font-size: 20px;">👍</div>
+                            <div class="element-label">Thích</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business & Office -->
+                <div class="element-category">
+                    <div class="category-title">💼 Business & Office</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="lightbulb">
+                            <div class="element-icon" style="font-size: 20px; color: #ed8936;">💡</div>
+                            <div class="element-label">Ý tưởng</div>
+                        </div>
+                        <div class="element-item" data-element="target">
+                            <div class="element-icon" style="font-size: 20px; color: #e53e3e;">🎯</div>
+                            <div class="element-label">Mục tiêu</div>
+                        </div>
+                        <div class="element-item" data-element="rocket">
+                            <div class="element-icon" style="font-size: 20px; color: #667eea;">🚀</div>
+                            <div class="element-label">Tên lửa</div>
+                        </div>
+                        <div class="element-item" data-element="trophy">
+                            <div class="element-icon" style="font-size: 20px; color: #ffd700;">🏆</div>
+                            <div class="element-label">Cúp</div>
+                        </div>
+                        <div class="element-item" data-element="medal">
+                            <div class="element-icon" style="font-size: 20px; color: #ffd700;">🏅</div>
+                            <div class="element-label">Huy chương</div>
+                        </div>
+                        <div class="element-item" data-element="briefcase">
+                            <div class="element-icon" style="font-size: 20px; color: #4a5568;">💼</div>
+                            <div class="element-label">Cặp</div>
+                        </div>
+                        <div class="element-item" data-element="graph">
+                            <div class="element-icon" style="font-size: 20px; color: #48bb78;">📈</div>
+                            <div class="element-label">Tăng trưởng</div>
+                        </div>
+                        <div class="element-item" data-element="calendar">
+                            <div class="element-icon" style="font-size: 20px; color: #3182ce;">📅</div>
+                            <div class="element-label">Lịch</div>
+                        </div>
+                        <div class="element-item" data-element="clock">
+                            <div class="element-icon" style="font-size: 20px; color: #718096;">🕐</div>
+                            <div class="element-label">Đồng hồ</div>
+                        </div>
+                        <div class="element-item" data-element="money">
+                            <div class="element-icon" style="font-size: 20px; color: #48bb78;">💰</div>
+                            <div class="element-label">Tiền</div>
+                        </div>
+                        <div class="element-item" data-element="handshake">
+                            <div class="element-icon" style="font-size: 20px;">🤝</div>
+                            <div class="element-label">Hợp tác</div>
+                        </div>
+                        <div class="element-item" data-element="key">
+                            <div class="element-icon" style="font-size: 20px; color: #ed8936;">🔑</div>
+                            <div class="element-label">Chìa khóa</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technology -->
+                <div class="element-category">
+                    <div class="category-title">💻 Technology</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="laptop">
+                            <div class="element-icon" style="font-size: 20px; color: #4a5568;">💻</div>
+                            <div class="element-label">Laptop</div>
+                        </div>
+                        <div class="element-item" data-element="phone">
+                            <div class="element-icon" style="font-size: 20px; color: #3182ce;">📱</div>
+                            <div class="element-label">Điện thoại</div>
+                        </div>
+                        <div class="element-item" data-element="wifi">
+                            <div class="element-icon" style="font-size: 20px; color: #48bb78;">📶</div>
+                            <div class="element-label">WiFi</div>
+                        </div>
+                        <div class="element-item" data-element="database">
+                            <div class="element-icon" style="font-size: 20px; color: #667eea;">🗄️</div>
+                            <div class="element-label">Cơ sở dữ liệu</div>
+                        </div>
+                        <div class="element-item" data-element="cloud">
+                            <div class="element-icon" style="font-size: 20px; color: #90cdf4;">☁️</div>
+                            <div class="element-label">Đám mây</div>
+                        </div>
+                        <div class="element-item" data-element="gear">
+                            <div class="element-icon" style="font-size: 20px; color: #718096;">⚙️</div>
+                            <div class="element-label">Cài đặt</div>
+                        </div>
+                        <div class="element-item" data-element="code">
+                            <div class="element-icon" style="font-size: 20px; color: #2d3748;">💻</div>
+                            <div class="element-label">Code</div>
+                        </div>
+                        <div class="element-item" data-element="bug">
+                            <div class="element-icon" style="font-size: 20px; color: #f56565;">🐛</div>
+                            <div class="element-label">Lỗi</div>
+                        </div>
+                        <div class="element-item" data-element="shield">
+                            <div class="element-icon" style="font-size: 20px; color: #48bb78;">🛡️</div>
+                            <div class="element-label">Bảo mật</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nature & Weather -->
+                <div class="element-category">
+                    <div class="category-title">🌿 Nature & Weather</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="sun">
+                            <div class="element-icon" style="font-size: 20px; color: #ffd700;">☀️</div>
+                            <div class="element-label">Mặt trời</div>
+                        </div>
+                        <div class="element-item" data-element="moon">
+                            <div class="element-icon" style="font-size: 20px; color: #a0aec0;">🌙</div>
+                            <div class="element-label">Mặt trăng</div>
+                        </div>
+                        <div class="element-item" data-element="tree">
+                            <div class="element-icon" style="font-size: 20px; color: #48bb78;">🌳</div>
+                            <div class="element-label">Cây</div>
+                        </div>
+                        <div class="element-item" data-element="flower">
+                            <div class="element-icon" style="font-size: 20px; color: #f093fb;">🌸</div>
+                            <div class="element-label">Hoa</div>
+                        </div>
+                        <div class="element-item" data-element="leaf">
+                            <div class="element-icon" style="font-size: 20px; color: #38a169;">🍃</div>
+                            <div class="element-label">Lá</div>
+                        </div>
+                        <div class="element-item" data-element="fire">
+                            <div class="element-icon" style="font-size: 20px; color: #ed8936;">🔥</div>
+                            <div class="element-label">Lửa</div>
+                        </div>
+                        <div class="element-item" data-element="water">
+                            <div class="element-icon" style="font-size: 20px; color: #3182ce;">💧</div>
+                            <div class="element-label">Nước</div>
+                        </div>
+                        <div class="element-item" data-element="lightning">
+                            <div class="element-icon" style="font-size: 20px; color: #ffd700;">⚡</div>
+                            <div class="element-label">Sét</div>
+                        </div>
+                        <div class="element-item" data-element="rainbow">
+                            <div class="element-icon" style="font-size: 20px;">🌈</div>
+                            <div class="element-label">Cầu vồng</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- People & Emotions -->
+                <div class="element-category">
+                    <div class="category-title">😊 People & Emotions</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="avatar">
+                            <div class="element-icon" style="font-size: 20px;">👤</div>
+                            <div class="element-label">Avatar</div>
+                        </div>
+                        <div class="element-item" data-element="team">
+                            <div class="element-icon" style="font-size: 20px;">👥</div>
+                            <div class="element-label">Đội bóng</div>
+                        </div>
+                        <div class="element-item" data-element="smile">
+                            <div class="element-icon" style="font-size: 20px;">😊</div>
+                            <div class="element-label">Vui</div>
+                        </div>
+                        <div class="element-item" data-element="thinking">
+                            <div class="element-icon" style="font-size: 20px;">🤔</div>
+                            <div class="element-label">Suy nghĩ</div>
+                        </div>
+                        <div class="element-item" data-element="celebration">
+                            <div class="element-icon" style="font-size: 20px;">🎉</div>
+                            <div class="element-label">Ăn mừng</div>
+                        </div>
+                        <div class="element-item" data-element="eyes">
+                            <div class="element-icon" style="font-size: 20px;">👀</div>
+                            <div class="element-label">Mắt</div>
+                        </div>
+                        <div class="element-item" data-element="brain">
+                            <div class="element-icon" style="font-size: 20px;">🧠</div>
+                            <div class="element-label">Não</div>
+                        </div>
+                        <div class="element-item" data-element="muscle">
+                            <div class="element-icon" style="font-size: 20px;">💪</div>
+                            <div class="element-label">Mạnh mẽ</div>
+                        </div>
+                        <div class="element-item" data-element="clap">
+                            <div class="element-icon" style="font-size: 20px;">👏</div>
+                            <div class="element-label">Vỗ tay</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts & Diagrams -->
+                <div class="element-category">
+                    <div class="category-title">📊 Charts</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="bar-chart">
+                            <div class="element-icon">
+                                <div class="chart-placeholder"
+                                    style="width: 24px; height: 18px; background: linear-gradient(45deg, #48bb78, #38a169); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: white;">
+                                    📊</div>
+                            </div>
+                            <div class="element-label">Biểu đồ cột</div>
+                        </div>
+                        <div class="element-item" data-element="pie-chart">
+                            <div class="element-icon">
+                                <div class="chart-placeholder"
+                                    style="width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(45deg, #ed8936, #f6ad55); display: flex; align-items: center; justify-content: center; font-size: 12px; color: white;">
+                                    🥧</div>
+                            </div>
+                            <div class="element-label">Biểu đồ tròn</div>
+                        </div>
+                        <div class="element-item" data-element="progress-bar">
+                            <div class="element-icon" style="font-size: 16px; color: #4299e1;">▓▓▓░░</div>
+                            <div class="element-label">Tiến độ</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Decorative Elements -->
+                <div class="element-category">
+                    <div class="category-title">✨ Decorative</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="badge">
+                            <div class="element-icon" style="font-size: 16px; color: #667eea;">🏷️</div>
+                            <div class="element-label">Huy hiệu</div>
+                        </div>
+                        <div class="element-item" data-element="divider">
+                            <div class="element-icon">
+                                <div
+                                    style="width: 24px; height: 2px; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 1px;">
+                                </div>
+                            </div>
+                            <div class="element-label">Đường phân cách</div>
+                        </div>
+                        <div class="element-item" data-element="quote-box">
+                            <div class="element-icon" style="font-size: 16px; color: #718096;">💬</div>
+                            <div class="element-label">Hộp trích dẫn</div>
+                        </div>
+                        <div class="element-item" data-element="sparkle">
+                            <div class="element-icon" style="font-size: 18px; color: #ffd700;">✨</div>
+                            <div class="element-label">Lấp lánh</div>
+                        </div>
+                        <div class="element-item" data-element="crown">
+                            <div class="element-icon" style="font-size: 18px; color: #ed8936;">👑</div>
+                            <div class="element-label">Vương miện</div>
+                        </div>
+                        <div class="element-item" data-element="gem">
+                            <div class="element-icon" style="font-size: 18px; color: #9f7aea;">💎</div>
+                            <div class="element-label">Đá quý</div>
+                        </div>
+                        <div class="element-item" data-element="confetti">
+                            <div class="element-icon" style="font-size: 18px;">🎊</div>
+                            <div class="element-label">Pháo giấy</div>
+                        </div>
+                        <div class="element-item" data-element="ribbon">
+                            <div class="element-icon" style="font-size: 18px; color: #e53e3e;">🎀</div>
+                            <div class="element-label">Ruy băng</div>
+                        </div>
+                        <div class="element-item" data-element="frame">
+                            <div class="element-icon" style="font-size: 18px; color: #8b5a3c;">🖼️</div>
+                            <div class="element-label">Khung</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Food & Objects -->
+                <div class="element-category">
+                    <div class="category-title">🍎 Food & Objects</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="coffee">
+                            <div class="element-icon" style="font-size: 18px; color: #8b5a3c;">☕</div>
+                            <div class="element-label">Cà phê</div>
+                        </div>
+                        <div class="element-item" data-element="pizza">
+                            <div class="element-icon" style="font-size: 18px;">🍕</div>
+                            <div class="element-label">Pizza</div>
+                        </div>
+                        <div class="element-item" data-element="apple">
+                            <div class="element-icon" style="font-size: 18px;">🍎</div>
+                            <div class="element-label">Táo</div>
+                        </div>
+                        <div class="element-item" data-element="cake">
+                            <div class="element-icon" style="font-size: 18px;">🎂</div>
+                            <div class="element-label">Bánh</div>
+                        </div>
+                        <div class="element-item" data-element="book">
+                            <div class="element-icon" style="font-size: 18px;">📚</div>
+                            <div class="element-label">Sách</div>
+                        </div>
+                        <div class="element-item" data-element="music">
+                            <div class="element-icon" style="font-size: 18px; color: #667eea;">🎵</div>
+                            <div class="element-label">Nhạc</div>
+                        </div>
+                        <div class="element-item" data-element="gift">
+                            <div class="element-icon" style="font-size: 18px;">🎁</div>
+                            <div class="element-label">Quà</div>
+                        </div>
+                        <div class="element-item" data-element="balloon">
+                            <div class="element-icon" style="font-size: 18px;">🎈</div>
+                            <div class="element-label">Bóng bay</div>
+                        </div>
+                        <div class="element-item" data-element="diamond-shape">
+                            <div class="element-icon" style="font-size: 18px; color: #9f7aea;">♦️</div>
+                            <div class="element-label">Kim cương</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mathematical & Scientific -->
+                <div class="element-category">
+                    <div class="category-title">🔢 Math & Science</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="infinity">
+                            <div class="element-icon" style="font-size: 18px; color: #667eea;">∞</div>
+                            <div class="element-label">Vô cực</div>
+                        </div>
+                        <div class="element-item" data-element="pi">
+                            <div class="element-icon" style="font-size: 18px; color: #48bb78;">π</div>
+                            <div class="element-label">Pi</div>
+                        </div>
+                        <div class="element-item" data-element="sum">
+                            <div class="element-icon" style="font-size: 18px; color: #ed8936;">Σ</div>
+                            <div class="element-label">Tổng</div>
+                        </div>
+                        <div class="element-item" data-element="delta">
+                            <div class="element-icon" style="font-size: 18px; color: #f56565;">Δ</div>
+                            <div class="element-label">Delta</div>
+                        </div>
+                        <div class="element-item" data-element="alpha">
+                            <div class="element-icon" style="font-size: 18px; color: #9f7aea;">α</div>
+                            <div class="element-label">Alpha</div>
+                        </div>
+                        <div class="element-item" data-element="beta">
+                            <div class="element-icon" style="font-size: 18px; color: #3182ce;">β</div>
+                            <div class="element-label">Beta</div>
+                        </div>
+                        <div class="element-item" data-element="microscope">
+                            <div class="element-icon" style="font-size: 18px;">🔬</div>
+                            <div class="element-label">Nghiên cứu</div>
+                        </div>
+                        <div class="element-item" data-element="atom">
+                            <div class="element-icon" style="font-size: 18px;">⚛️</div>
+                            <div class="element-label">Nguyên tử</div>
+                        </div>
+                        <div class="element-item" data-element="dna">
+                            <div class="element-icon" style="font-size: 18px;">🧬</div>
+                            <div class="element-label">DNA</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transportation -->
+                <div class="element-category">
+                    <div class="category-title">🚗 Transportation</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="car">
+                            <div class="element-icon" style="font-size: 18px;">🚗</div>
+                            <div class="element-label">Ô tô</div>
+                        </div>
+                        <div class="element-item" data-element="airplane">
+                            <div class="element-icon" style="font-size: 18px;">✈️</div>
+                            <div class="element-label">Máy bay</div>
+                        </div>
+                        <div class="element-item" data-element="train">
+                            <div class="element-icon" style="font-size: 18px;">🚆</div>
+                            <div class="element-label">Tàu hỏa</div>
+                        </div>
+                        <div class="element-item" data-element="bike">
+                            <div class="element-icon" style="font-size: 18px;">🚲</div>
+                            <div class="element-label">Xe đạp</div>
+                        </div>
+                        <div class="element-item" data-element="ship">
+                            <div class="element-icon" style="font-size: 18px;">🚢</div>
+                            <div class="element-label">Tàu thủy</div>
+                        </div>
+                        <div class="element-item" data-element="bus">
+                            <div class="element-icon" style="font-size: 18px;">🚌</div>
+                            <div class="element-label">Xe buýt</div>
+                        </div>
+                        <div class="element-item" data-element="motorcycle">
+                            <div class="element-icon" style="font-size: 18px;">🏍️</div>
+                            <div class="element-label">Xe máy</div>
+                        </div>
+                        <div class="element-item" data-element="helicopter">
+                            <div class="element-icon" style="font-size: 18px;">🚁</div>
+                            <div class="element-label">Trực thăng</div>
+                        </div>
+                        <div class="element-item" data-element="satellite">
+                            <div class="element-icon" style="font-size: 18px;">🛰️</div>
+                            <div class="element-label">Vệ tinh</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sports & Activities -->
+                <div class="element-category">
+                    <div class="category-title">⚽ Sports & Activities</div>
+                    <div class="element-grid">
+                        <div class="element-item" data-element="soccer">
+                            <div class="element-icon" style="font-size: 18px;">⚽</div>
+                            <div class="element-label">Bóng đá</div>
+                        </div>
+                        <div class="element-item" data-element="basketball">
+                            <div class="element-icon" style="font-size: 18px;">🏀</div>
+                            <div class="element-label">Bóng rổ</div>
+                        </div>
+                        <div class="element-item" data-element="tennis">
+                            <div class="element-icon" style="font-size: 18px;">🎾</div>
+                            <div class="element-label">Quần vợt</div>
+                        </div>
+                        <div class="element-item" data-element="golf">
+                            <div class="element-icon" style="font-size: 18px;">⛳</div>
+                            <div class="element-label">Golf</div>
+                        </div>
+                        <div class="element-item" data-element="swimming">
+                            <div class="element-icon" style="font-size: 18px;">🏊</div>
+                            <div class="element-label">Bơi lội</div>
+                        </div>
+                        <div class="element-item" data-element="running">
+                            <div class="element-icon" style="font-size: 18px;">🏃</div>
+                            <div class="element-label">Chạy bộ</div>
+                        </div>
+                        <div class="element-item" data-element="cycling">
+                            <div class="element-icon" style="font-size: 18px;">🚴</div>
+                            <div class="element-label">Đạp xe</div>
+                        </div>
+                        <div class="element-item" data-element="weightlifting">
+                            <div class="element-icon" style="font-size: 18px;">🏋️</div>
+                            <div class="element-label">Tạ</div>
+                        </div>
+                        <div class="element-item" data-element="yoga">
+                            <div class="element-icon" style="font-size: 18px;">🧘</div>
+                            <div class="element-label">Yoga</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="canvas-container" id="canvasContainer">
+        <div class="canvas" id="canvas"></div>
+        <!-- Drag and drop overlay -->
+        <div class="drag-drop-overlay" id="dragDropOverlay">
+            <div class="drag-drop-message">
+                Thả ảnh/video vào đây để thêm vào slide
+            </div>
+        </div>
+        <!-- Snapping guides -->
+        <div id="vertical-guide" class="guide-line vertical"></div>
+        <div id="horizontal-guide" class="guide-line horizontal"></div>
+        <!-- NEW: Distance measurement guides -->
+        <div id="distance-guides-container">
+            <div class="distance-line" id="dist-line-top"></div>
+            <div class="distance-label" id="dist-label-top">0</div>
+            <div class="distance-line" id="dist-line-right"></div>
+            <div class="distance-label" id="dist-label-right">0</div>
+            <div class="distance-line" id="dist-line-bottom"></div>
+            <div class="distance-label" id="dist-label-bottom">0</div>
+            <div class="distance-line" id="dist-line-left"></div>
+            <div class="distance-label" id="dist-label-left">0</div>
+        </div>
+    </div>
+
+    <div class="properties-panel" id="propertiesPanel">
+        <h2 style="margin-bottom: 25px; color: #2d3748; font-weight: 700;">Thuộc tính</h2>
+        <div id="propertiesContent">
+        </div>
+    </div>
+
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-item" data-action="group">Nhóm <span class="shortcut">Ctrl+G</span></div>
+        <div class="context-menu-item" data-action="ungroup">Bỏ nhóm <span class="shortcut">Ctrl+Shift+G</span></div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" data-action="connectElements">Nối bằng đường kẻ</div>
+        <div class="context-menu-item" data-action="disconnectLine">Ngắt kết nối</div>
+        <div class="context-menu-item" data-action="changeConnectorType">Đổi kiểu đường kẻ</div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" data-action="copy">Sao chép <span class="shortcut">Ctrl+C</span></div>
+        <div class="context-menu-item" data-action="paste">Dán <span class="shortcut">Ctrl+V</span></div>
+        <div class="context-menu-item" data-action="duplicate">Nhân bản <span class="shortcut">Ctrl+D</span></div>
+        <div class="context-menu-item" data-action="delete">Xóa <span class="shortcut">Del</span></div>
+        <div class="context-menu-divider"></div>
+        <div class="context-menu-item" data-action="bringForward">Đưa lên trên</div>
+        <div class="context-menu-item" data-action="sendBackward">Gửi xuống dưới</div>
+    </div>
+
+    <!-- Connector Type Selector -->
+    <div class="connector-type-selector" id="connectorTypeSelector">
+        <div class="selector-section">
+            <h4>Kiểu đường kẻ</h4>
+            <div class="selector-row">
+                <button data-type="straight" class="active">📏 Thẳng</button>
+                <button data-type="curved">🌊 Cong</button>
+                <button data-type="step">⚡ Gấp khúc</button>
+            </div>
+            <div class="selector-row">
+                <button data-type="dashed">⚊ Nét đứt</button>
+                <button data-type="dotted">⚪ Chấm</button>
+                <button data-type="thick">■ Dày</button>
+            </div>
+        </div>
+        <div class="selector-section">
+            <h4>Kiểu mũi tên</h4>
+            <div class="selector-row">
+                <button data-arrow="forward" class="active">➡️ Xuôi</button>
+                <button data-arrow="backward">⬅️ Ngược</button>
+                <button data-arrow="both">⬅️➡️ Cả hai</button>
+            </div>
+            <div class="selector-row">
+                <button data-arrow="none">━ Không</button>
+                <button data-arrow="circle">⭕ Tròn</button>
+                <button data-arrow="diamond">♦️ Hình thoi</button>
+            </div>
+            <div class="selector-row">
+                <button data-arrow="square">⬛ Hình vuông</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="zoom-controls">
+        <button class="zoom-btn" id="zoomOut">−</button>
+        <div class="zoom-level" id="zoomLevel">Vừa</div>
+        <button class="zoom-btn" id="zoomIn">+</button>
+    </div>
+
+
+    <!-- Editor Script - ES6 Modules -->
+    <script type="module">
+        // Force reload editor.js with NEW FILENAME to bypass cache
+        const editorScript = document.createElement('script');
+        editorScript.src = `js/editor-new-1765301429.js`;
+        editorScript.noModule = true;
+        document.body.appendChild(editorScript);
+
+        console.log('⚡ Starting dynamic import of init.js...');
+        // Force reload init.js with timestamp + random to bypass aggressive cache
+        const bust = Date.now() + Math.random();
+        import(`./js/init/init.js?v=${bust}`)
+            .then(() => console.log('✅ init.js imported successfully'))
+            .catch(err => console.error('❌ Failed to import init.js:', err));
+    </script>
+</body>
+
+</html>

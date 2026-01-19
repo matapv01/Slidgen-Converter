@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You Slide - Large Font</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* OVERRIDE EDITOR BACKGROUND - HIGHEST SPECIFICITY */
+        div[style*="background: white"], 
+        div[style*="background: #FFFFFF"],
+        div[style*="background-color: white"],
+        div[style*="background-color: #FFFFFF"],
+        #canvas,
+        [data-bg*="#FFFFFF"] {
+            background: linear-gradient(to bottom, transparent 98.5%, #E0E0E0 98.5%), url('https://www.toptal.com/designers/subtlepatterns/uploads/paper.png') !important;
+            background-size: 3.5rem 3.5rem, auto !important;
+            background-color: #FFFFFF !important;
+        }
+        
+        html#html.html { 
+            font-size: 16px !important;
+            height: 100vh !important;
+            width: 100vw !important;
+            font-family: 'Lato', sans-serif !important;
+            color: #34495E !important;
+            overflow: hidden !important;
+            background-color: #FFFFFF !important;
+            background-image: linear-gradient(to bottom, transparent 98.5%, #E0E0E0 98.5%), url('https://www.toptal.com/designers/subtlepatterns/uploads/paper.png') !important;
+            background-size: 3.5rem 3.5rem, auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        body#body.body, html#html.html {
+            height: 100vh !important;
+            width: 100vw !important;
+            font-family: 'Lato', sans-serif !important;
+            color: #34495E !important;
+            overflow: hidden !important;
+            background-color: #FFFFFF !important;
+            background-image: linear-gradient(to bottom, transparent 98.5%, #E0E0E0 98.5%), url('https://www.toptal.com/designers/subtlepatterns/uploads/paper.png') !important;
+            background-size: 3.5rem 3.5rem, auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 3rem;
+            position: relative;
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        .heart-icon {
+            /* ĐÃ SỬA ĐỔI: Icon to hơn để nổi bật */
+            width: 8rem;
+            margin-bottom: 2rem;
+        }
+        
+        .main-text {
+            font-family: 'Patrick Hand', cursive;
+            /* ĐÃ SỬA ĐỔI: Font to hơn để dễ nhìn trên web */
+            font-size: clamp(4rem, 12vw, 8rem);
+            color: #56B2E8;
+            margin-bottom: 2rem;
+            line-height: 1;
+            white-space: nowrap;
+            overflow: visible;
+            transform: scale(1.1);
+        }
+
+        .question-text {
+            /* ĐÃ SỬA ĐỔI: Font to hơn */
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        
+        @media (max-width: 48rem) {
+            .heart-icon { width: 6rem; }
+            .main-text { 
+                font-size: clamp(3rem, 10vw, 6rem);
+                transform: scale(1);
+            }
+            .question-text { font-size: 1.5rem; }
+            .slide-container { padding: 2rem; }
+        }
+        
+        @media (max-width: 30rem) {
+            .main-text { 
+                font-size: 2.5rem;
+                letter-spacing: -1px;
+            }
+            .question-text { font-size: 1.2rem; }
+        }
+        
+        /* Web container override */
+        @media (min-width: 769px) {
+            .slide-container {
+                transform: scale(1.2);
+                transform-origin: center center;
+            }
+        }
+    </style>
+</head>
+<body id="body" class="body">
+    <div class="slide-container">
+        
+    <svg class="heart-icon" viewBox="0 0 100 95" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 15.7C35.2-12.2 0 4.6 0 32.5 0 52.2 21.9 66.9 50 90c28.1-23.1 50-37.8 50-57.5C100 4.6 64.8-12.2 50 15.7z"
+              fill="none" stroke="#56B2E8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <g stroke="#56B2E8" stroke-width="1.5" stroke-linecap="round">
+            <line x1="60" y1="45" x2="75" y2="40" />
+            <line x1="62" y1="50" x2="80" y2="45" />
+            <line x1="64" y1="55" x2="84" y2="50" />
+            <line x1="66" y1="60" x2="86" y2="55" />
+            <line x1="68" y1="65" x2="85" y2="60" />
+        </g>
+    </svg>
+    
+        <h1 class="main-text">THANKS!</h1>
+        <p class="question-text">Any questions?</p>
+    </div>
+</body>
+</html>

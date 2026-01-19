@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split Content Slide - High-Tech Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 16px; }
+        body, html {
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0F172A, #1E293B);
+        }
+
+        .slide-container {
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4rem;
+        }
+
+        .main-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            color: #FFFFFF;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .highlight { color: #22D3EE; }
+        
+        .columns-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            width: 100%;
+            max-width: 75rem;
+        }
+
+        .column-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #22D3EE;
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.1);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            /* ĐÃ XÓA: transition */
+        }
+        /* ĐÃ XÓA: khối :hover */
+
+        .card-header {
+            margin-bottom: 2rem;
+            color: #22D3EE;
+        }
+        .column-icon {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .column-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+        }
+        .column-description {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #D1D5DB;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <h1 class="main-title">SPLIT YOUR CONTENT</h1>
+        <div class="columns-grid">
+            
+        <div class="column-card">
+            <div class="card-header">
+                <svg class="column-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74A7 7 0 0 0 12 2M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+            </div>
+            <h2 class="column-title">Title One</h2>
+            <p class="column-description">Description for the first column goes here. Elaborate on your point with clear and concise text.</p>
+        </div>
+        
+        <div class="column-card">
+            <div class="card-header">
+                <svg class="column-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 18a8 8 0 1 1 8-8a8 8 0 0 1-8 8m0-14a6 6 0 1 0 6 6a6 6 0 0 0-6-6m0 10a4 4 0 1 1 4-4a4 4 0 0 1-4 4m0-6a2 2 0 1 0 2 2a2 2 0 0 0-2-2"/></svg>
+            </div>
+            <h2 class="column-title">Title Two</h2>
+            <p class="column-description">Description for the second column. This layout is perfect for comparing two ideas side-by-side.</p>
+        </div>
+        
+        </div>
+    </div>
+</body>
+</html>

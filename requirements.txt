@@ -1,0 +1,4 @@
+selenium
+Flask>=2.3
+Flask-CORS>=4.0
+requests>=2.32

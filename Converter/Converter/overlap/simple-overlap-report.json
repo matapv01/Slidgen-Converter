@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-12-05T11:53:40.513Z",
+  "outputFile": "output.html",
+  "totalElements": 5,
+  "totalOverlaps": 1,
+  "overlaps": [
+    {
+      "element1": {
+        "tagName": "h1",
+        "className": "main-title",
+        "textContent": "CONTENT",
+        "left": 96,
+        "top": 500,
+        "width": 432,
+        "height": 25.33332633972168,
+        "zIndex": 104
+      },
+      "element2": {
+        "tagName": "p",
+        "className": "reference-description",
+        "textContent": "Presentations are communication tools that can be used as demonstrations, lectur",
+        "left": 96,
+        "top": 494.987,
+        "width": 300,
+        "height": 40.796875,
+        "zIndex": 109
+      },
+      "overlap": {
+        "overlapWidth": "300.00",
+        "overlapHeight": "25.33",
+        "overlapArea": "7600.00",
+        "overlapPercent": "69.44"
+      }
+    }
+  ]
+}

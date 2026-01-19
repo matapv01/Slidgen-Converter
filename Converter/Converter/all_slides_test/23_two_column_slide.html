@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Column Slide</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 16px; width: 1920px; height: 1080px; }
+        body, html {
+            height: 1080px;
+            width: 1920px;
+            font-family: Arial, sans-serif;
+            background-color: #a2c4c9;
+            color: #555555;
+            overflow: hidden;
+        }
+
+        .slide-background {
+            position: absolute;
+            left: 120px;
+            top: 80px;
+            width: 1680px;
+            height: 920px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .slide-content {
+            position: absolute;
+            left: 200px;
+            top: 140px;
+            width: 1520px;
+            height: 800px;
+        }
+        
+        .main-title {
+            position: absolute;
+            left: 200px;
+            top: 140px;
+            width: 1520px;
+            font-size: 36px;
+            font-weight: 700;
+            color: #555555;
+            text-align: center;
+            margin: 0 0 40px 0;
+            line-height: 1.2;
+        }
+        
+        .left-column {
+            position: absolute;
+            left: 200px;
+            top: 223px;
+            width: 730px;
+            height: 717px;
+            background-color: #a2c4c9;
+            padding: 40px;
+            border-radius: 12px;
+        }
+        
+        .right-column {
+            position: absolute;
+            left: 990px;
+            top: 223px;
+            width: 730px;
+            height: 717px;
+            background-color: #ffffff;
+            border: 2px solid #a2c4c9;
+            padding: 40px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background layer -->
+    <div class="slide-background"></div>
+    
+    <!-- Main title -->
+    <h1 class="main-title">Your Title Here</h1>
+    
+    <!-- Left column -->
+    <div class="left-column">
+        
+        <div class="left-section" style="margin-bottom: 50px;">
+            <h2 style="font-size:24xpx; color: #ffffff; margin-top: 0; margin-bottom: 20px; font-weight: bold;">Your Title Here</h2>
+            <p style="font-size: 16px; color: #ffffff; margin: 0; line-height: 1.6;">Presentations are communication tools that can be used as demonstrations.</p>
+        </div>
+        
+        <div class="left-section" style="margin-bottom: 50px;">
+            <h2 style="font-size:24xpx; color: #ffffff; margin-top: 0; margin-bottom: 20px; font-weight: bold;">Your Title Here</h2>
+            <p style="font-size: 16px; color: #ffffff; margin: 0; line-height: 1.6;">Presentation are communication tools that can be used as demontrations, lectures, reports, and more. it is mostly presented before an audience.</p>
+        </div>
+        
+    </div>
+    
+    <!-- Right column -->
+    <div class="right-column">
+        
+        <div class="right-section" style="display: flex; align-items: flex-start; margin-bottom: 50px;">
+            <div style="margin-right: 20px; flex-shrink: 0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#a2c4c9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <path d="M16 13l-4 4h-4v-4l8-8z"></path>
+        </svg></div>
+            <div>
+                <h2 style="font-size: 24px; color: #555555; margin-top: 0; margin-bottom: 20px; font-weight: bold;">Your Title Here</h2>
+                <p style="font-size: 16px; color: #555555; margin: 0; line-height: 1.6;">Presentations are communication tools that can be used as speeches, reports, and more.</p>
+            </div>
+        </div>
+        
+        <div class="right-section" style="display: flex; align-items: flex-start; margin-bottom: 50px;">
+            <div style="margin-right: 20px; flex-shrink: 0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#a2c4c9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg></div>
+            <div>
+                <h2 style="font-size: 24px; color: #555555; margin-top: 0; margin-bottom: 20px; font-weight: bold;">Your Title Here</h2>
+                <p style="font-size: 16px; color: #555555; margin: 0; line-height: 1.6;">Presentations are communication tools that can be used as speeches, reports, and more.</p>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

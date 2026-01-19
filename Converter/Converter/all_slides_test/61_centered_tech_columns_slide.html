@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High-Tech Columns Slide - Top Aligned</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { height: 100vh; width: 100vw; font-family: 'Nunito', sans-serif; overflow: hidden; }
+        .slide-container {
+            width: 100%; height: 100%; display: flex;
+            justify-content: flex-start; 
+            align-items: center;
+            flex-direction: column;
+            position: relative; 
+            padding: 6rem 4rem;
+            background-color: #0F172A;
+        }
+        
+        /* ĐÃ XÓA: Toàn bộ CSS cho tên lửa và animation peek */
+        
+        .content-wrapper { z-index: 10; color: #F8FAFC; text-align: center; width: 100%; max-width: 75rem; }
+        
+        .slide-title {
+            font-size: clamp(3rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 15rem;
+        }
+        
+        .columns-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3.5rem;
+        }
+
+        .column-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #22D3EE;
+            box-shadow: 0 0 20px #22D3EE33;
+            padding: 3rem;
+            border-radius: 1rem;
+            text-align: left;
+        }
+
+        .column-icon {
+            color: #22D3EE;
+            margin-bottom: 2rem;
+        }
+        .column-icon svg {
+            width: 3.5rem;
+            height: 3.5rem;
+        }
+
+        .column-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #F8FAFC;
+        }
+        .column-description {
+            font-size: 1.4rem;
+            line-height: 1.7;
+            opacity: 0.8;
+            color: #F8FAFC;
+        }
+        .page-number {
+            position: absolute; bottom: 2rem; left: 50%;
+            transform: translateX(-50%); font-size: 1rem;
+            font-weight: 700; color: #94A3B8;
+            z-index: 10;
+        }
+        @media (max-width: 64rem) {
+            .slide-container { padding-top: 4rem; overflow-y: auto; height: auto; min-height: 100vh; }
+            .columns-grid { grid-template-columns: 1fr; }
+            .slide-title { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        
+        <div class="content-wrapper">
+            <h1 class="slide-title">You can also split your content</h1>
+            <div class="columns-grid">
+                
+        <div class="column-card">
+            <div class="column-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74A7 7 0 0 0 12 2M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+            </div>
+            <h2 class="column-title">Column One</h2>
+            <p class="column-description">Description for column one.</p>
+        </div>
+        
+        <div class="column-card">
+            <div class="column-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 18a8 8 0 1 1 8-8a8 8 0 0 1-8 8m0-14a6 6 0 1 0 6 6a6 6 0 0 0-6-6m0 10a4 4 0 1 1 4-4a4 4 0 0 1-4 4m0-6a2 2 0 1 0 2 2a2 2 0 0 0-2-2"/></svg>
+            </div>
+            <h2 class="column-title">Column Two</h2>
+            <p class="column-description">Description for column two.</p>
+        </div>
+        
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "name": "slidegenius-puppeteer-server",
+  "version": "1.0.0",
+  "description": "Puppeteer server for SlideGenius PDF generation",
+  "main": "puppeteer-server.js",
+  "scripts": {
+    "start": "node puppeteer-server.js",
+    "dev": "nodemon puppeteer-server.js",
+    "test": "node test-server.js",
+    "install-deps": "npm install",
+    "server": "node puppeteer-server.js",
+    "setup": "npm install && echo Setup complete!"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cheerio": "^1.1.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "puppeteer": "^21.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "puppeteer",
+    "pdf",
+    "slidegenius",
+    "export"
+  ],
+  "author": "SlideGenius",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
