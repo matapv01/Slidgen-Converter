@@ -3,7 +3,9 @@ Flask>=2.3
 Flask-CORS>=4.0
 requests>=2.32
 selenium
+playwright # npm install playwright
 
 # Note: Node.js >= 16.0.0 is also required
 # Install via: apt-get install -y nodejs npm
 # Then run: cd Converter/Converter && npm install
+# npm install playwright single-file-core fs-extra
